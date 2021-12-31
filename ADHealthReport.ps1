@@ -8,8 +8,7 @@ Original script belongs to public module
 https://evotec.xyz/what-do-we-say-to-health-checking-active-directory/
 
 
-The pre-req install and single execution run script 
-created by: Kurt Kuszek
+The pre-req install and single execution run script created by: Tastyratz
 
 Version:
 1.11 2021-12 TR Added ISE window check, keypress for module repair
@@ -166,7 +165,7 @@ Remove-Variable key
 ################################################################
 
 function CheckRequiredOSModules {
-	Clear-Variable $MissingModules -ErrorAction SilentlyContinue
+	if ($MissingModules){ Clear-Variable $MissingModules }
 	# Modules we need
 	$modulesArray = @(
 		"ActiveDirectory",
@@ -310,8 +309,15 @@ $Sources = @(
 	'DCInformation'
 	'ForestReplicationStatus'
 )
-$TestResults = Invoke-Testimo -ReturnResults -ExtendedResults -Sources $Sources #-ExcludeDomains 'ad.evotec.pl' #-ExcludeDomainControllers $ExludeDomainControllers
-New-HTML -FilePath $PSScriptRoot\Output\TestimoSummary.html -UseCssLinks -UseJavaScriptLinks {
+
+Invoke-Testimo -ReturnResults -ExtendedResults -Sources $Sources #-ExcludeDomains 'ad.evotec.pl' #-ExcludeDomainControllers $ExludeDomainControllers
+
+
+
+#no longer needed, reports output HTML natively
+
+#$TestResults = Invoke-Testimo -ReturnResults -ExtendedResults -Sources $Sources #-ExcludeDomains 'ad.evotec.pl' #-ExcludeDomainControllers $ExludeDomainControllers
+<#New-HTML -FilePath $PSScriptRoot\Output\TestimoSummary.html -UseCssLinks -UseJavaScriptLinks {
 	[array]$PassedTests = $TestResults['Results'] | Where-Object { $_.Status -eq $true }
 	[array]$FailedTests = $TestResults['Results'] | Where-Object { $_.Status -ne $true }
 	New-HTMLTab -Name 'Summary' -IconBrands galactic-senate {
@@ -436,3 +442,5 @@ New-HTML -FilePath $PSScriptRoot\Output\TestimoSummary.html -UseCssLinks -UseJav
 		}
 	}
 } -ShowHTML
+
+#>
